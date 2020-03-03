@@ -53,13 +53,15 @@ module.exports = {
         let includeAppVersion = this.readConfig('includeAppVersion');
         let uploadMinifiedFile = this.readConfig('uploadMinifiedFile');
 
-        log('Uploading sourcemaps to bugsnag', { verbose: true });
+        log('Uploading sourcemaps to bugsnag');
 
         let jsMapPairs = fetchJSMapPairs(distFiles);
 
         let uploads = jsMapPairs.map(pair => {
           let mapFilePath = pair.mapFile;
+          console.log("mapFilePath = ", mapFilePath);
           let jsFilePath = pair.jsFile;
+          console.log("jsFilePath = ", jsFilePath);
           let formData = {
             apiKey: apiKey,
             minifiedUrl: publicUrl + jsFilePath,
@@ -90,17 +92,20 @@ module.exports = {
         });
 
         return RSVP.all(uploads).then(function() {
-          log('Finished uploading sourcemaps', { verbose: true });
+          log('Finished uploading sourcemaps');
         });
       },
 
       didUpload() {
-        this.log('Deleting sourcemaps', { verbose: true });
+        this.log('Deleting sourcemaps');
         let deleteSourcemaps = this.readConfig('deleteSourcemaps');
         if (deleteSourcemaps) {
           let distDir = this.readConfig('distDir');
           let distFiles = this.readConfig('distFiles');
           let mapFilePaths = fetchFilePathsByType(distFiles, distDir, 'map');
+          this.log("distFiles = ", distFiles);
+          this.log("mapFilePaths = ", mapFilePaths.length);
+          this.log("mapFilePaths = ", mapFilePaths);
           let promises = mapFilePaths.map(function(mapFilePath) {
             return new RSVP.Promise(function(resolve, reject) {
               fs.unlink(mapFilePath, function(err) {
