@@ -29,8 +29,10 @@ module.exports = {
         },
         revisionKey: function(context) {
           if (context.revisionData) {
+            console.log("context.revisionData.revisionKey = ", context.revisionData.revisionKey);
             return context.revisionData.revisionKey;
           } else {
+            console.log("process.env.SOURCE_VERSION = ", process.env.SOURCE_VERSION);
             return process.env.SOURCE_VERSION || '';
           }
         },
@@ -83,6 +85,8 @@ module.exports = {
           if (revisionKey && includeAppVersion) {
             formData.appVersion = revisionKey;
           }
+
+          console.log("formData.appVersion = ", formData.appVersion);
 
           return request({
             uri: 'https://upload.bugsnag.com',
